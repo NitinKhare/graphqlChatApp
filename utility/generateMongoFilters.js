@@ -6,7 +6,6 @@ module.exports.generateMongoFilters = (args) => {
     pipeline.push({ $match: {} });
     if (!args.start) args.start = 0;
     let obj = {};
-    console.log(args)
     for (let key in args) {
         if (operators.indexOf(key) == -1) {
             obj[key] = args[key]
@@ -19,7 +18,7 @@ module.exports.generateMongoFilters = (args) => {
         if(args.page && args.perpage && !args.start) args.start = args.page * args.perpage;
         pipeline.push({ $skip: args.start })
     }
-    else if (args.limit || args.perpage) {
+    if (args.limit || args.perpage) {
         let limit = args.limit || args.perpage
         pipeline.push({ $limit: limit });
     }

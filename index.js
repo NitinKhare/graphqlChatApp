@@ -7,15 +7,19 @@ require('dotenv').config()
 
 require("./db/connection")
 
+app.get("/", function(req, res){
+  res.redirect("/hello")
+})
 
 
 app.use(
   '/hello',
-  graphqlHTTP({
+  graphqlHTTP((request, response, graphQLParams) => ({
     schema: require('./schemas/chatApp').hello,
     rootValue: require('./resolvers/chatApp').root,
     graphiql: true,
-  }),
+    context:{request}
+  })),
 );
 
 app.listen(4000,()=>{

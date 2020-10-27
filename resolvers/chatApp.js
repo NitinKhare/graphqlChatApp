@@ -1,29 +1,30 @@
 var User = require('../db/models/User');
 
 module.exports.root = {
-  user: async (args) => {
-    if (args.email) {
-      delete args.page
-      delete args.perpage
+  user: async (parentvalues,args, context) => {
+    console.log(parentvalues)
+    if (parentvalues.email) {
+      delete parentvalues.page
+      delete parentvalues.perpage
     }
-    let filters = require("../utility/generateMongoFilters").generateMongoFilters(args);
-    console.log(filters)
-    let result = await User.aggregate(filters);
-    console.log(result)
-    return result
+    return require('../utility/EntityCRUD').listEntity(parentvalues, 'User')
   },
 
-  createUser: async (args) => {
+  createUser: async (parentvalues,args, context) => {
     try {
-      console.log(args)
-      let newUser = new User({
-        ...args
-      }); // not hashing the passwords for simplicity
-      let createdUser = await newUser.save();
-      console.log(createdUser)
-      return createdUser
+      // console.log("Context ",context)
+      console.log("Args ",parentvalues)
+      return require('../utility/EntityCRUD').createEntity(parentvalues, 'User')
     } catch (e) {
       throw new Error(e)
     }
-  }
+  },
+
+  createGroup: async (parentvalues,args, context) => {
+    try {
+      return require('../utility/EntityCRUD').createEntity(parentvalues, 'Group')
+    } catch (e) {
+      throw new Error(e)
+    }
+  },
 };

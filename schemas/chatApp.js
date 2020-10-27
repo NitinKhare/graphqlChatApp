@@ -3,12 +3,10 @@ var { buildSchema } = require('graphql');
 
 /*
 TODO:
-need to check how to make query fields optional
-remove users query
+  remove users query
 */
 module.exports.hello = buildSchema(`
   type Query {
-    users : [User] 
     user(name: String, email: String, page: Int, perpage: Int, limit: Int): [User]
     group(name: String, id:String, page: Int, perpage: Int, limit: Int): [Group]
   }
