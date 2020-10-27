@@ -59,16 +59,58 @@ module.exports.root = {
       throw new Error(e)
     }
   },
+  addToGroup: async (parentvalues,args,context) =>{
+    let headers = args.request.headers.authorization;
+    let user = verify(headers);
+    //fetch user to check if there is another group if yes delete its messages from that group
+    let group = await require('../utility/EntityCRUD').getEntity(parentvalues.groupId, 'Group')
+   // console.log("Group", group)
+    if(!group) throw new Error("No Such Group Exists");
+    //add User to group array
+    let updateGroup ={"$addToSet":{users:user.id}}
+    let updatedGroup = await require('../utility/EntityCRUD').updateEntity(group._id,updateGroup, 'Group')
+    //console.log("UpdatedGroup ", updatedGroup)
+    //add Group in User 
+    let data = {group: group._id}
+    let updatedUser = await require('../utility/EntityCRUD').updateEntity(user.id,data, 'User')
+    console.log("updateUser", updatedUser)
+    return updatedUser;
+  },
 
-  createMessage: async (parentvalues, args, context) => {
-    try {
-      let headers = args.request.headers.authorization;
-      let user = verify(headers);
-      parentvalues.user = user._id;
-      parentvalues.group = user.group
-      return require('../utility/EntityCRUD').createEntity(parentvalues, 'Message')
-    } catch (e) {
-      throw new Error(e)
+  sendMessage:async (parentvalues,args,context)=>{
+    //Create A message
+    console.log("Inside Create message")
+    let headers = args.request.headers.authorization;
+    let user = verify(headers);
+    user = await require('../utility/EntityCRUD').getEntity(user.id, 'User')
+    if(!user || !user.group) throw new Error("User has not joined any group yet")
+    let group = await require('../utility/EntityCRUD').getEntity(user.group, 'Group')
+   // console.log("Group", group)
+    if(!group) throw new Error("No Such group found")
+    let message = {
+      body: parentvalues.body,
+      group:group._id,
+      user:user.id
     }
+    message = await require('../utility/EntityCRUD').createEntity(message, 'Message')
+   // console.log("Message", message)
+    let updateGroupData = {"$push":{messages:message._id}}
+    let updatedGroup = await require('../utility/EntityCRUD').updateEntity(group._id,updateGroupData, 'Group')
+   // console.log("UpdatedGroup", updatedGroup)
+    return parentvalues.body
+    //Update Group to have that Message Id
+
   }
 };
+
+  // createMessage: async (parentvalues, args, context) => {
+  //   try {
+  //     let headers = args.request.headers.authorization;
+  //     let user = verify(headers);
+  //     parentvalues.user = user._id;
+  //     parentvalues.group = user.group
+  //     return require('../utility/EntityCRUD').createEntity(parentvalues, 'Message')
+  //   } catch (e) {
+  //     throw new Error(e)
+  //   }
+  // },

@@ -25,3 +25,9 @@ module.exports.getEntity = async (id, type)=>{
     let entityResult = await Entity.findById(id);
     return entityResult;
 }
+
+module.exports.updateEntity = async(id,data, type)=>{
+    let Entity = require(`../db/models/${type}`)
+    let entityResult = await Entity.findByIdAndUpdate(id, data);
+    return entityResult;
+}

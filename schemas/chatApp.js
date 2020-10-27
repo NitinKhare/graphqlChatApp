@@ -34,8 +34,9 @@ module.exports.hello = buildSchema(`
   type Mutation{
     createUser(email: String!, password:String!): auth!
     createGroup(name: String): Group
-    createMessage(body:String!): Message
     login(email:String!, password:String!):auth!
+    addToGroup(groupId:String!):User
+    sendMessage(body:String!):String
   }
 
   type auth{
