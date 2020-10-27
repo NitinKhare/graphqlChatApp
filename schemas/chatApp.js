@@ -8,7 +8,7 @@ TODO:
 module.exports.hello = buildSchema(`
   type Query {
     user(name: String, email: String, page: Int, perpage: Int, limit: Int): [User]
-    group(name: String, id:String, page: Int, perpage: Int, limit: Int): [Group]
+    group(name: String, createdBy:String, page: Int, perpage: Int, limit: Int): [Group]
   }
 
   type User{
@@ -22,6 +22,7 @@ module.exports.hello = buildSchema(`
     name: String
     users: [User]
     messages:[Message]
+    createdBy:User!
   }
 
   type Message{
