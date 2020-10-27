@@ -8,17 +8,19 @@ require('dotenv').config()
 require("./db/connection")
 
 app.get("/", function(req, res){
-  res.redirect("/hello")
+  res.redirect("/api")
 })
 
 
 app.use(
-  '/hello',
+  '/api',
   graphqlHTTP((request, response, graphQLParams) => ({
     schema: require('./schemas/chatApp').hello,
     rootValue: require('./resolvers/chatApp').root,
     graphiql: true,
-    context:{request}
+    context:{
+      request
+    }
   })),
 );
 

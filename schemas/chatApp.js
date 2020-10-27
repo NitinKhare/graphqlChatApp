@@ -13,6 +13,7 @@ module.exports.hello = buildSchema(`
 
   type User{
     email: String!
+    password:String!
     username: String
   }
 
@@ -24,15 +25,21 @@ module.exports.hello = buildSchema(`
   }
 
   type Message{
-      user: User!
+      user: User
       body: String!
-      group: Group!
+      group: Group
   }
 
   type Mutation{
-    createUser(email: String, password:String): User
+    createUser(email: String!, password:String!): auth!
     createGroup(name: String): Group
-    createMessage(name: String,body:String, group:String): Message
+    createMessage(body:String!): Message
+    login(email:String!, password:String!):auth!
+  }
+
+  type auth{
+    token: String!
+    user: User!
   }
 
   input newUserInput{

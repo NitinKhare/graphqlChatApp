@@ -11,9 +11,9 @@ module.exports.createEntity = async (data, type)=>{
 
 module.exports.listEntity = async (data, type)=>{
     let filters = require("../utility/generateMongoFilters").generateMongoFilters(data);
-    console.log(filters);
+    //console.log(filters);
     let Entity = require(`../db/models/${type}`)
     let entityResult = await Entity.aggregate(filters);
-    console.log(entityResult);
+    // console.log(entityResult);
     return entityResult;
 }
