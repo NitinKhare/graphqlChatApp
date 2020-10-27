@@ -1,16 +1,6 @@
 let User = require('../db/models/User');
 let { verify } = require("../utility/jwt");
 
-class Group{
-  constructor(){
-
-  }
-  getUser(){
-
-  }
-}
-
-
 
 module.exports.root = {
   user: async (parentvalues, args, context) => {
@@ -24,12 +14,11 @@ module.exports.root = {
   group:async (parentvalues, args, context) => {
     let groups = await require('../utility/EntityCRUD').listEntity(parentvalues, 'Group')
     for(let i=0; i<groups.length; i++){
-      let user = await require('../utility/EntityCRUD').listEntity({_id:groups[i].createdBy}, 'User')
+      let user = await require('../utility/EntityCRUD').getEntity(groups[i].createdBy, 'User')
       console.log("User", user)
-      groups[i].createdBy = user[0]
+      groups[i].createdBy = user
       if(i== groups.length -1) return groups  // find a better way 
     }
-    // return groups;
   },
 
   createUser: async (parentvalues, args, context) => {
